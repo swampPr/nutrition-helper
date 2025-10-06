@@ -1,15 +1,15 @@
 {
     "name": "nutrition-helper",
     "scripts": {
-        "dev": "bun run --hot src/server.ts",
-        "start": "bun run --watch src/server.ts"
+        "dev": "bun run --hot --env-file=.env src/server.ts",
+        "start": "bun run --watch --env-file=.env src/server.ts"
     },
     "type": "module",
     "dependencies": {
+        "chalk": "^5.6.2",
         "hono": "^4.9.9"
     },
     "devDependencies": {
         "@types/bun": "latest"
     }
 }
-
