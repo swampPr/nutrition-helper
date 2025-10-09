@@ -53,7 +53,11 @@ CREATE TABLE IF NOT EXISTS user_water_log(
 
 export const findUser = (userID: number): User | null => userDB.query(`select * from users where id = ?`).get(userID) as User | null;
 
-export const findEmail = (userEmail: string): string | null => userDB.query(`select email from users where email = ?`).get(userEmail) as string | null;
+export function findEmail(userEmail: string): string | null {
+    const userObj = userDB.query(`select email from users where email = ?`).get(userEmail) as { email: string } | null;
+    if (userObj === null) return null;
+    return userObj.email;
+}
 
 export function insertNewUser(userInfo: NewUser) {
     userDB.query(`insert into users (username, password, first_name, last_name, email) values(?, ?, ?, ?, ?)`).run(userInfo.username, userInfo.password, userInfo.firstName, userInfo.lastName, userInfo.email);

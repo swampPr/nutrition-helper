@@ -39,7 +39,7 @@ export default async function LoginHandler(c: Context) {
     await RedisClient.expire(`session:${sessionID}`, 86400);
     setCookie(c, 'session_id', sessionID);
 
-    //TODO: Send dashboard file
+    //TODO: Send dashboard page
     // return c.redirect(<DASHBOARD URL>);
     return c.text('LOGGED IN');
 }

@@ -5,7 +5,7 @@ import type { SessionID } from '../utils/utils.ts';
 
 export abstract class Middlewares {
     static checkSession = async (c: Context, next: Next) => {
-        const sessionID: SessionID = getCookie(c, 'session_id');
+        const sessionID: SessionID = getCookie(c, 'session_id') as string;
         if (!sessionID)
             return c.json(
                 {
@@ -14,7 +14,7 @@ export abstract class Middlewares {
                 401
             );
 
-        const sessionCheck = RedisClient.exists(`session:${sessionID}`);
+        const sessionCheck = await RedisClient.exists(`session:${sessionID}`);
         if (!sessionCheck)
             return c.json(
                 {
@@ -23,7 +23,7 @@ export abstract class Middlewares {
                 401
             );
 
-        const sessionData = RedisClient.get(`session:${sessionID}`);
+        const sessionData = JSON.parse((await RedisClient.get(`session:${sessionID}`)) as string);
         c.set('SessionData', sessionData);
 
         await next();

@@ -39,7 +39,6 @@ export default async function RegisterHandler(c: Context) {
             500
         );
     }
-    //TODO: Create session cookies and test API
     const sessionID: SessionID = crypto.randomUUID();
     const sessionData = {
         password: registerInfo.password,
@@ -51,7 +50,7 @@ export default async function RegisterHandler(c: Context) {
     await RedisClient.expire(`session:${sessionID}`, 86400);
     setCookie(c, 'session_id', sessionID);
 
-    //TODO: Send dashboard file
+    //TODO: Send dashboard page
     // return c.redirect(<DASHBOARD URL>);
     return c.text('REGISTERED AND LOGGED IN');
 }
