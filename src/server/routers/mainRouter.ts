@@ -6,7 +6,7 @@ import GenMealPlanHandler from '../handlers/genMealPlanHandler.ts';
 
 const app = new Hono();
 
-// app.use(Middlewares.checkSession);
+app.use('/meal', Middlewares.checkSession);
 app.post('/login', LoginHandler);
 app.post('/register', RegisterHandler);
 app.post('/meal', GenMealPlanHandler);

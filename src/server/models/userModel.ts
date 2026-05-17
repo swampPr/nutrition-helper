@@ -55,8 +55,7 @@ export const findUser = (userID: number): User | null => userDB.query(`select * 
 
 export function findEmail(userEmail: string): string | null {
     const userObj = userDB.query(`select email from users where email = ?`).get(userEmail) as { email: string } | null;
-    if (userObj === null) return null;
-    return userObj.email;
+    return userObj === null ? null : userObj.email;
 }
 
 export function insertNewUser(userInfo: NewUser) {
@@ -65,6 +64,5 @@ export function insertNewUser(userInfo: NewUser) {
 
 export function findUserID(userName: string): number | null {
     const userObj = userDB.query(`select id from users where username = ?`).get(userName) as { id: number } | null;
-    if (userObj === null) return null;
-    return userObj.id;
+    return userObj === null ? null : userObj.id;
 }

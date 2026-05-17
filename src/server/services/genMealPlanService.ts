@@ -1,6 +1,6 @@
 import type { WeekMeals, WeekMealsResponse, Nutrients, DayMealsResponse, DayMeals, UserMealOpts, Meal } from '../utils/utils.ts';
 
-export async function genMealPlan(userMealOpts: Required<UserMealOpts>) {
+export async function genMealPlan(userMealOpts: Required<UserMealOpts>): Promise<(DayMeals | WeekMeals)[]> {
     const mealPromises = [];
     for (let i = 0; i < userMealOpts.numOfMeals; i++) {
         mealPromises.push(getMealPlan(userMealOpts));
@@ -10,8 +10,8 @@ export async function genMealPlan(userMealOpts: Required<UserMealOpts>) {
     return userMealPlan;
 }
 
-async function getMealPlan(userMealOpts: UserMealOpts): Promise<DayMeals | WeekMeals | 'ERROR: TYPE STUFF'> {
-    const baseUrl = `https://api.spoonacular.com/mealplanner/generate`;
+async function getMealPlan(userMealOpts: UserMealOpts): Promise<DayMeals | WeekMeals> {
+    const baseUrl = 'https://api.spoonacular.com/mealplanner/generate';
     const params = new URLSearchParams();
 
     if (userMealOpts.diet) params.set('diet', userMealOpts.diet);
@@ -29,8 +29,7 @@ async function getMealPlan(userMealOpts: UserMealOpts): Promise<DayMeals | WeekM
 
     const mealsObj: DayMealsResponse | WeekMealsResponse = (await response.json()) as DayMealsResponse | WeekMealsResponse;
     if (userMealOpts.timeFrame === 'day') return parseDayMeals(mealsObj as DayMealsResponse);
-    if (userMealOpts.timeFrame === 'week') return parseWeekMeals(mealsObj as WeekMealsResponse);
-    return 'ERROR: TYPE STUFF';
+    return parseWeekMeals(mealsObj as WeekMealsResponse);
 }
 
 function parseWeekMeals(mealsObj: WeekMealsResponse): WeekMeals {
@@ -89,18 +88,17 @@ function parseDayMeals(mealsObj: DayMealsResponse): DayMeals {
         nutrients: {} as Nutrients,
     };
 
-    for (const meal in userDayMeals) {
-        const key = meal as keyof DayMeals;
+    for (let i = 0; i < mealsObj.meals.length; i++) {
+        let meal = mealsObj.meals[i];
+        const key = `meal${i + 1}` as keyof DayMeals;
 
         if (key === 'nutrients') continue;
 
-        mealsObj.meals.forEach((meal) => {
-            userDayMeals[key].id = meal.id;
-            userDayMeals[key].readyInMinutes = meal.readyInMinutes;
-            userDayMeals[key].servings = meal.servings;
-            userDayMeals[key].sourceUrl = meal.sourceUrl;
-            userDayMeals[key].title = meal.title;
-        });
+        userDayMeals[key].id = meal!.id;
+        userDayMeals[key].readyInMinutes = meal!.readyInMinutes;
+        userDayMeals[key].servings = meal!.servings;
+        userDayMeals[key].sourceUrl = meal!.sourceUrl;
+        userDayMeals[key].title = meal!.title;
     }
 
     userDayMeals.nutrients = mealsObj.nutrients;

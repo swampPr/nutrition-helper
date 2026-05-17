@@ -40,6 +40,5 @@ export default async function LoginHandler(c: Context) {
     setCookie(c, 'session_id', sessionID);
 
     //TODO: Send dashboard page
-    // return c.redirect(<DASHBOARD URL>);
-    return c.text('LOGGED IN');
+    return c.redirect('/dashboard');
 }

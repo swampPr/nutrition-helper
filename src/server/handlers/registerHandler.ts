@@ -51,6 +51,6 @@ export default async function RegisterHandler(c: Context) {
     setCookie(c, 'session_id', sessionID);
 
     //TODO: Send dashboard page
-    // return c.redirect(<DASHBOARD URL>);
-    return c.text('REGISTERED AND LOGGED IN');
+    return c.redirect('/dashboard');
+    // return c.text('REGISTERED AND LOGGED IN', 201);
 }
